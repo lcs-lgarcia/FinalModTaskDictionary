@@ -8,8 +8,22 @@
 import SwiftUI
 
 struct SearchView: View {
+    
+    @State var foundWord: [word] = []
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+       
+        
+        List(foundWord, id: \.word1) { currentWord in
+            
+            VStack{
+                Text(currentWord.word1)
+                    .bold()
+                Text(currentWord.pronu)
+            }
+            
+        }
+        
     }
 }
 
