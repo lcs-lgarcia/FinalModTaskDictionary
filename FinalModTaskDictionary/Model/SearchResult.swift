@@ -7,9 +7,8 @@
 
 import Foundation
 
-struct searchResult: Codable {
+struct SearchResult: Codable, Hashable {
+
+    let word: String
     
-    
-    let resultCount: Int
-    let results: [word]
 }

@@ -11,23 +11,18 @@ struct NetworkService {
     // in our app. Since this function might take a while to complete
     // this ensures that other parts of our app (like the user interface)
     // won't "freeze up" while this function does it's job.
-    static func fetch() async -> [word] {
+    static func fetch(resultsFor name: String) async -> [SearchResult] {
         
-        // 1. Attempt to create a URL from the address provided
-        let endpoint = "https://api.dictionaryapi.dev/api/v2/entries/en/<word>"
-        guard let url = URL(string: endpoint) else {
+        
+        let cleanedUpName = name.lowercased().replacingOccurrences(of:"", with: "+")
+                                                                   
+                                                // 1. Attempt to create a URL from the address provided
+            let endpoint = "https://api.dictionaryapi.dev/api/v2/entries/en/\(cleanedUpName)"
+            guard let url = URL(string: endpoint) else {
             print("Invalid address for JSON endpoint.")
             return []
         }
-        
-        // 2. Fetch the raw data from the URL
-        //
-        // Network requests can potentially fail (throw errors) so
-        // we complete them within a do-catch block to report errors if they
-        // occur.
-        //
-        do {
-            
+            do {
             // Fetch the data
             let (data, _) = try await URLSession.shared.data(from: url)
             
@@ -37,15 +32,14 @@ struct NetworkService {
             let decoder = JSONDecoder()
             
             // Use the decoder object to convert the raw data into an instance of our Swift data type
-            let decodedData = try decoder.decode(searchResult.self, from: data)
-
-            // If we got here, decoding succeeded
-            if decodedData.resultCount > 0 {
-                return decodedData.results
-            } else {
-                return []
-            }
+            let decodedData = try decoder.decode([SearchResult].self, from: data)
             
+                if decodedData.count > 0 {
+                    return decodedData
+                } else {
+                    return []
+                }
+                
         } catch {
             
             // Show an error that we wrote and understand

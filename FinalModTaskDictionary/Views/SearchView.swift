@@ -9,19 +9,33 @@ import SwiftUI
 
 struct SearchView: View {
     
-    @State var foundWord: [word] = []
+    @State var results: [SearchResult] = []
+    
+    @State var searchText = ""
     
     var body: some View {
        
-        
-        List(foundWord, id: \.word1) { currentWord in
-            
-            VStack{
-                Text(currentWord.word1)
-                    .bold()
-                Text(currentWord.pronu)
+        NavigationView(){
+            List(results, id: \.self) { currentResult in
+                
+                VStack(alignment: .leading){
+                    HStack{
+                        Text(currentResult.word)
+                            .bold()
+                        Spacer()
+                    }
+                        
+                }
+                
             }
-            
+        }
+        .searchable(text: $searchText)
+        .onChange(of: searchText) {
+            newSearchText in
+            Task{
+                results = await NetworkService.fetch(resultsFor: newSearchText)
+                print(results)
+            }
         }
         
     }
