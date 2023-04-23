@@ -7,8 +7,11 @@
 
 import Foundation
 
-struct SearchResult: Codable, Hashable {
 
-    let word: String
+struct SearchResult: Codable {
+    
+    let total_results: String
+    let query: String
+    let slips: [Info]
     
 }

@@ -1,4 +1,3 @@
-
 import Foundation
 
 struct NetworkService {
@@ -11,13 +10,13 @@ struct NetworkService {
     // in our app. Since this function might take a while to complete
     // this ensures that other parts of our app (like the user interface)
     // won't "freeze up" while this function does it's job.
-    static func fetch(resultsFor name: String) async -> [SearchResult] {
+    static func fetch(resultsFor name: String) async -> [Info] {
         
         
         let cleanedUpName = name.lowercased().replacingOccurrences(of:"", with: "+")
                                                                    
                                                 // 1. Attempt to create a URL from the address provided
-            let endpoint = "https://api.dictionaryapi.dev/api/v2/entries/en/\(cleanedUpName)"
+        let endpoint = "https://api.adviceslip.com/advice/search/\(cleanedUpName)"
             guard let url = URL(string: endpoint) else {
             print("Invalid address for JSON endpoint.")
             return []
@@ -32,7 +31,7 @@ struct NetworkService {
             let decoder = JSONDecoder()
             
             // Use the decoder object to convert the raw data into an instance of our Swift data type
-            let decodedData = try decoder.decode([SearchResult].self, from: data)
+            let decodedData = try decoder.decode([Info].self, from: data)
             
                 if decodedData.count > 0 {
                     return decodedData
@@ -56,3 +55,4 @@ struct NetworkService {
     
     
 }
+
